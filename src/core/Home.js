@@ -11,7 +11,7 @@ export default function Home() {
         <Base title="Home Page" description="Welcome to the T-shirt store">
             <div className="row">
                 <div className="col-4">
-                    <button className="btn btn-success">TEST</button>
+                    <button className="btn btn-success">TEST1</button>
                 </div>
                 <div className="col-4">
                     <button className="btn btn-success">TEST</button>
