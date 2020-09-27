@@ -5,7 +5,7 @@ import { Link } from "react-router-dom";
 
 const AdminDashBoard = () => {
 
-    const { user: { name, email, role } } = isAuthenticated();
+    const { user: { name, email } } = isAuthenticated();
 
     const adminLeftSide = () => {
         return (
@@ -16,6 +16,7 @@ const AdminDashBoard = () => {
                 <ul className="list-group">
                     <li className="list-group item">
                         <Link className="nav-link text-success" to="/admin/create/category">Create Categories</Link>
+                        <Link className="nav-link text-success" to="/admin/categories">Manage Categories</Link>
                         <Link className="nav-link text-success" to="/admin/create/product">Create Products</Link>
                         <Link className="nav-link text-success" to="/admin/products">Manage Products</Link>
                         <Link className="nav-link text-success" to="/admin/orders">Manage Orders</Link>
@@ -53,8 +54,6 @@ const AdminDashBoard = () => {
                     {adminRightSide()}
                 </div>
             </div>
-
-
         </Base>
     )
 }
