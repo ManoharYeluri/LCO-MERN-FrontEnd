@@ -1,13 +1,12 @@
 import React, { useState } from "react";
 import Base from "../core/Base";
-import { Link, Redirect } from "react-router-dom";
-
-import { signin, authenticate, isAuthenticated } from "../auth/helper"
+import { Redirect } from "react-router-dom";
+import { signin, authenticate, isAuthenticated } from "../auth/helper";
 
 const Signin = () => {
 
     const [values, setValues] = useState({
-        email: "b@manoharyeluri.com",
+        email: "a@manoharyeluri.com",
         password: "12345",
         error: "",
         loading: false,
@@ -41,6 +40,7 @@ const Signin = () => {
         signin({ email, password })
             .then(data => {
                 if (data.error) {
+                    console.log(data.error);
                     setValues({ ...values, error: data.error, loading: false });
                 }
                 else {
@@ -51,15 +51,19 @@ const Signin = () => {
                     })
                 }
             })
-            .catch(console.log("Sign-in request is failed!"))
+            .catch(err => {
+                console.log("Sign-in request is failed!");
+                console.log(err);
+            })
     }
-
 
     const loadingMessage = () => {
         return (
             loading && (
-                <div className="alert alert-info">
-                    <h2>Loading </h2>
+                <div className="row">
+                    <div className="col-md-6 offset-sm-3 text-left">
+                        <div className="alert alert-info font-weight-bold">Loading...</div>
+                    </div>
                 </div>
             )
         )

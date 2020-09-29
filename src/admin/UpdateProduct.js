@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import Base from "../core/Base";
-import { Link } from "react-router-dom";
+import { Link, Redirect } from "react-router-dom";
 import { getCategories, getProduct, updateProduct } from "./helper/adminapicall";
 import { isAuthenticated } from "../auth/helper/index"
 
@@ -8,14 +8,16 @@ const UpdateProduct = ({ match }) => {
 
     const { user, token } = isAuthenticated();
 
+    var categoriesList = {};
+
     const [values, setValues] = useState({
         name: "",
         description: "",
         price: "",
         stock: "",
         photo: "",
-        categories: [],
         category: "",
+        categories: "",
         loading: false,
         error: false,
         createdProduct: "",
@@ -23,26 +25,33 @@ const UpdateProduct = ({ match }) => {
         formData: ""
     })
 
-    const { name, description, price, stock, photo, categories, category, loading, error, createdProduct, getRedirect, formData } = values;
+    const { name, description, price, stock, photo, category, categories, loading, error, createdProduct, getRedirect, formData } = values;
+
+    useEffect(() => {
+        preload(match.params.productId);
+    }, []);
 
     const preload = (productId) => {
+        preloadCategories();
         getProduct(productId).then(data => {
             if (data.error) {
+                console.log("Server Responsed with error: ", data.error);
                 setValues({ ...values, error: data.error })
             }
             else {
-                preloadCategories();
                 setValues({
                     ...values,
                     name: data.name,
                     description: data.description,
                     price: data.price,
                     category: data.category._id,
+                    categories: categoriesList,
                     stock: data.stock,
                     formData: new FormData()
                 });
-                console.log("CATEGORIES", categories);
             }
+        }).catch(err => {
+            console.log(err);
         })
     }
 
@@ -52,26 +61,22 @@ const UpdateProduct = ({ match }) => {
                 if (data.error) {
                     console.log(data.error)
                 } else {
-                    setValues({ categories: data, formData: new FormData() })
+                    categoriesList = data;
                 }
             })
-            .catch()
+            .catch(err => {
+                console.log("Error occured while loading list of all categories.. " + err);
+            })
     }
-
-    useEffect(() => {
-        preload(match.params.productId);
-    }, []);
-
 
     const onSubmit = (event) => {
         event.preventDefault();
         setValues({ ...values, error: "", loading: true });
-
         updateProduct(match.params.productId, user._id, token, formData).then(data => {
             if (data.error) {
                 setValues({ ...values, error: data.error })
             } else {
-                setValues({ ...values, name: "", description: "", price: "", photo: "", stock: "", loading: false, createdProduct: data.name })
+                setValues({ ...values, name: "", description: "", price: "", category: "", photo: "", stock: "", loading: false, createdProduct: data.name, getRedirect: true })
             }
         }).catch(err => {
             console.log(err);
@@ -101,7 +106,14 @@ const UpdateProduct = ({ match }) => {
         )
     }
 
-    const createProductForm = () => (
+    const performRedirect = () => {
+        // TODO: Implement Delayed Redirect
+        if (getRedirect) {
+            return <Redirect to="/admin/products" />
+        }
+    }
+
+    const updateProductForm = () => (
         <form >
             <span>Post photo</span>
             <div className="form-group">
@@ -118,7 +130,8 @@ const UpdateProduct = ({ match }) => {
             <div className="form-group">
                 <input
                     onChange={handleChange("name")}
-                    name="photo"
+                    type="text"
+                    name="name"
                     className="form-control"
                     placeholder="Name"
                     value={name}
@@ -127,7 +140,8 @@ const UpdateProduct = ({ match }) => {
             <div className="form-group">
                 <textarea
                     onChange={handleChange("description")}
-                    name="photo"
+                    type="text"
+                    name="description"
                     className="form-control"
                     placeholder="Description"
                     value={description}
@@ -143,8 +157,8 @@ const UpdateProduct = ({ match }) => {
                 />
             </div>
             <div className="form-group">
-                <select onChange={handleChange("category")} className="form-control" placeholder="Category">
-                    <option>Select</option>
+                <select onChange={handleChange("category")} value={category || ''} className="form-control" placeholder="Category">
+                    <option value='' >Select</option>
                     {categories && categories.map((cate, index) => {
                         return (
                             <option key={index} value={cate._id}>{cate.name}</option>
@@ -162,7 +176,6 @@ const UpdateProduct = ({ match }) => {
                     value={stock}
                 />
             </div>
-
             <button type="submit" onClick={onSubmit} className="btn btn-outline-success mb-3">
                 Update Product
           </button>
@@ -171,14 +184,17 @@ const UpdateProduct = ({ match }) => {
 
     return (
         <Base title="Update Product" description="Welcome to product update section" className="container bg-info p-4">
-            <Link to="/admin/dashboard" className="btn btn-md btn-dark mb-3">Admin Home</Link>
             <div className="row bg-dark text-white rounded">
                 <div className="col-md-8 offset-md-2">
                     {successMessage()}
                     {errorMessage()}
-                    {createProductForm()}
+                    {updateProductForm()}
+                    {/* TODO: Implement Delayed Redirect */}
+                    {/* performRedirect() */}
                 </div>
             </div>
+            <Link to="/admin/dashboard" className="btn btn-md btn-dark mt-3 mr-1">Admin Home</Link>
+            <Link to="/admin/products" className="btn btn-md btn-dark mt-3">Manage Products</Link>
         </Base>
     )
 }
