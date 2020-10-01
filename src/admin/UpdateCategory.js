@@ -41,14 +41,13 @@ const UpdateCategory = ({ match }) => {
         setValues({ ...values, error: "", loading: true });
 
         const toBeUpdatedCategory = { "name": name };
-        console.log(toBeUpdatedCategory);
 
         updateCategory(match.params.categoryId, user._id, token, toBeUpdatedCategory).then(data => {
             if (data.error) {
                 console.log("Error Occured: " + data.error);
                 setValues({ ...values, error: data.error })
             } else {
-                setValues({ ...values, name: "", loading: false })
+                setValues({ ...values, name: "", updatedCategory: data.name, loading: false })
             }
         }).catch(err => {
             console.log("Error Occured: " + err);

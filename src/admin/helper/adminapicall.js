@@ -56,17 +56,14 @@ export const updateCategory = (categoryId, userId, token, category) => {
         console.log("ERROR IN CALLING API!");
         return Promise.reject("ERROR IN CALLING API!");
     }
-    else {
-        console.log("To Be Updated Category: " + category.name);
-        console.log(JSON.stringify(category));
-    }
     return fetch(`${API}/category/${categoryId}/${userId}`, {
         method: "PUT",
         headers: {
             Accept: "application/json",
+            "Content-Type": "application/json",
             Authorization: `Bearer ${token}`
         },
-        body: category
+        body: JSON.stringify(category)
     })
         .then(response => {
             return response.json();

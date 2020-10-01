@@ -26,7 +26,7 @@ footer {
 
 .hero-image img {
   display: block;
-  margin: auto;
+  margin: 50px auto;
   border-radius: 1%;
   width: 50vw;
 }
