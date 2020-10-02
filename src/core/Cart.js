@@ -2,7 +2,8 @@ import React, { useState, useEffect } from "react";
 import "../styles.css";
 import Base from "./Base";
 import Card from "./Card";
-import { loadCart } from "./helper/carthelper"
+import { loadCart } from "./helper/carthelper";
+import StripeCheckout from "./StripeCheckout";
 
 const Cart = () => {
 
@@ -26,7 +27,7 @@ const Cart = () => {
                     ))
                 }
                 {(isCartEmpty) &&
-                    <h2>No items are your cart as of now! Add some...</h2>
+                    <h3>No items are in your cart as of now! Add some...</h3>
                 }
             </div>
         )
@@ -44,7 +45,9 @@ const Cart = () => {
         <Base title="Cart Page" description="Ready to checkout">
             <div className="row text-center">
                 <div className="col-6">{loadAllProducts()}</div>
-                <div className="col-6">{loadCheckout()}</div>
+                <div className="col-6">
+                    <StripeCheckout products={products} setReload={setReload} />
+                </div>
             </div>
         </Base>
     )

@@ -19,11 +19,9 @@ const Menu = ({ history }) => {
                 <li className="nav-item">
                     <Link style={currentTab(history, "/")} className="nav-link" to="/">Home</Link>
                 </li>
-                {isAuthenticated() && (
-                    <li className="nav-item">
-                        <Link style={currentTab(history, "/cart")} className="nav-link" to="/cart">Cart</Link>
-                    </li>
-                )}
+                <li className="nav-item">
+                    <Link style={currentTab(history, "/cart")} className="nav-link" to="/cart">Cart</Link>
+                </li>
                 {isAuthenticated() && isAuthenticated().user.role === 0 && (
                     <li className="nav-item">
                         <Link style={currentTab(history, "/user/dashboard")} className="nav-link" to="/user/dashboard">Dashboard</Link>
@@ -31,7 +29,7 @@ const Menu = ({ history }) => {
                 )}
                 {isAuthenticated() && isAuthenticated().user.role === 1 && (
                     <li className="nav-item">
-                        <Link style={currentTab(history, "/admin/dashboard")} className="nav-link" to="/admin/dashboard">Dashboard</Link>
+                        <Link style={currentTab(history, "/admin/dashboard")} className="nav-link" to="/admin/dashboard">A.Dashboard</Link>
                     </li>
                 )}
                 {!isAuthenticated() &&
